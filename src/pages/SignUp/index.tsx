@@ -8,6 +8,9 @@ import { Input } from '../../components/Input';
 import { Button } from '../../components/Button';
 import { TextButton } from '../../components/TextButton';
 
+import * as Yup from 'yup';
+import { yupResolver } from '@hookform/resolvers/yup'
+
 import { theme } from '../../global/styles/theme';
 import { useNavigation } from '@react-navigation/native';
 import { useForm } from 'react-hook-form';
@@ -32,15 +35,31 @@ interface FormData {
   password: string;
 }
 
+const schema = Yup.object().shape({
+  name: Yup
+    .string()
+    .required('Nome é obrigatório'),
+  email: Yup
+    .string()
+    .required('Email é obrigatório')
+    .email('Digite um e-mail válido'),
+  password: Yup
+    .string()
+    .required('Senha obrigatória'),
+});
+
 export function SignUp() {
-  const navigation = useNavigation();  
+  const navigation = useNavigation();
 
   const {
-    handleSubmit,
     control,
-  } = useForm();
+    handleSubmit,
+    formState: { errors }
+  } = useForm({
+    resolver: yupResolver(schema)
+  });
 
-  function handleSigUp(form: FormData) {
+  async function handleSigUp(form: FormData) {
     const data = {
       name: form.name,
       email: form.email,
@@ -66,6 +85,7 @@ export function SignUp() {
               iconName="user"
               placeholder="Nome"
               autoCapitalize="words"
+              error={errors.name && errors.name.message}
             />
             <Input
               name="email"
@@ -75,6 +95,7 @@ export function SignUp() {
               keyboardType="email-address"
               autoCorrect={false}
               autoCapitalize="none"
+              error={errors.email && errors.email.message}
             />
             <Input
               name="password"
@@ -83,7 +104,7 @@ export function SignUp() {
               placeholder="Senha"
               secureTextEntry
               returnKeyType="send"
-              onSubmitEditing={handleSubmit(handleSigUp)}
+              error={errors.password && errors.password.message}
             />
 
             <Button

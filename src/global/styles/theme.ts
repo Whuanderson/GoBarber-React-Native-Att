@@ -5,7 +5,8 @@ export const theme = {
     placeholder_color: '#666360',
     background_primary: '#312e38',
     background_button: '#ff9000',
-    background_input: '#232129'
+    background_input: '#232129',
+    error: '#FF0000'
   },
 
   fonts: {

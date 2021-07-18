@@ -1,5 +1,8 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { Platform } from '@unimodules/react-native-adapter';
+import * as Yup from 'yup';
+
+import { yupResolver } from '@hookform/resolvers/yup'
 
 import logoImg from '../../assets/logo.png'
 import { Input } from '../../components/Input';
@@ -8,7 +11,7 @@ import { TextButton } from '../../components/TextButton';
 
 import { theme } from '../../global/styles/theme';
 
-import { useForm } from 'react-hook-form';
+import { FormProvider, useForm } from 'react-hook-form';
 import { useNavigation } from '@react-navigation/native';
 
 
@@ -16,7 +19,8 @@ import {
   TouchableWithoutFeedback,
   KeyboardAvoidingView,
   Keyboard,
-  View
+  View,
+  Alert
 } from 'react-native';
 
 import {
@@ -26,25 +30,38 @@ import {
   Footer
 } from './styles';
 
+
 interface FormData {
   email: string;
   password: string;
 }
 
-export function SignIn() {
+const schema = Yup.object().shape({
+  email: Yup
+    .string()
+    .required('Email é obrigatório')
+    .email('Digite um e-mail válido'),
+  password: Yup
+    .string()
+    .required('Senha obrigatória'),
+})
 
+export function SignIn() {
   const navigation = useNavigation();
 
   const {
     handleSubmit,
     control,
-  } = useForm();
+    formState: { errors }
+  } = useForm({
+    resolver: yupResolver(schema)
+  });
 
   function handleCreateAccount() {
     navigation.navigate('SignUp')
   }
 
-  function handleSigIn(form: FormData) {
+  async function handleSigIn(form: FormData) {
     const data = {
       email: form.email,
       password: form.password
@@ -72,7 +89,7 @@ export function SignIn() {
               autoCorrect={false}
               keyboardType="email-address"
               returnKeyType="next"
-              onSubmitEditing={( ) => {}}
+              error={errors.email && errors.email.message}
             />
             <Input
               name="password"
@@ -81,7 +98,7 @@ export function SignIn() {
               placeholder="Senha"
               secureTextEntry
               returnKeyType="send"
-              onSubmitEditing={handleSubmit(handleSigIn)}
+              error={errors.password && errors.password.message}
             />
 
             <Button
