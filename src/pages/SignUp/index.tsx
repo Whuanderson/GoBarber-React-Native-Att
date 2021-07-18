@@ -1,6 +1,7 @@
 import React from 'react';
 import { Platform } from '@unimodules/react-native-adapter';
 
+import { api } from '../../services/api';
 
 import logoImg from '../../assets/logo.png'
 
@@ -19,7 +20,8 @@ import {
   TouchableWithoutFeedback,
   KeyboardAvoidingView,
   Keyboard,
-  View
+  View,
+  Alert
 } from 'react-native';
 
 import {
@@ -66,6 +68,16 @@ export function SignUp() {
       password: form.password
     }
     console.log(data)
+    await api.post('/users', {data})
+    .then(() => {
+      Alert.alert('Cadastro realizado com sucesso!',
+      'Você já pode fazer login na aplicação',
+    );
+      navigation.navigate('SignIn');
+    })
+    .catch(() => {
+      Alert.alert('Erro', 'Occorreu algum erro')
+    }) 
   }
 
   return (
