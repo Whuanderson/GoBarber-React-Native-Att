@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useContext, useState, useRef } from 'react';
 import { Platform } from '@unimodules/react-native-adapter';
 import * as Yup from 'yup';
 
@@ -11,9 +11,9 @@ import { TextButton } from '../../components/TextButton';
 
 import { theme } from '../../global/styles/theme';
 
-import { FormProvider, useForm } from 'react-hook-form';
 import { useNavigation } from '@react-navigation/native';
 
+import { useAuth } from '../../hooks/auth';
 
 import {
   TouchableWithoutFeedback,
@@ -31,42 +31,41 @@ import {
 } from './styles';
 
 
-interface FormData {
-  email: string;
-  password: string;
-}
-
-const schema = Yup.object().shape({
-  email: Yup
-    .string()
-    .required('Email é obrigatório')
-    .email('Digite um e-mail válido'),
-  password: Yup
-    .string()
-    .required('Senha obrigatória'),
-})
-
 export function SignIn() {
-  const navigation = useNavigation();
+  const { signIn } = useAuth();
+  const [email, setEmail] = useState('');
+  const [password, setPassowrd] = useState('');
 
-  const {
-    handleSubmit,
-    control,
-    formState: { errors }
-  } = useForm({
-    resolver: yupResolver(schema)
-  });
+    const navigation = useNavigation();
 
   function handleCreateAccount() {
     navigation.navigate('SignUp')
   }
 
-  async function handleSigIn(form: FormData) {
-    const data = {
-      email: form.email,
-      password: form.password
+  async function handleSigIn() {
+    try {
+      const schema = Yup.object().shape({
+        password: Yup.string()
+          .required('A senha é obrigatória'),
+        email: Yup.string()
+          .required('E-mail obrigatório')
+          .email('Digite um e-mail válido'),
+      });
+
+      await schema.validate({ email, password });
+
+      signIn({ email, password });
+    } catch (error) {
+      if (error instanceof Yup.ValidationError) {
+        return Alert.alert('Erro', error.message);
+      } else {
+        console.log(error)
+        Alert.alert(
+          'Erro na autenticação',
+          'Ocorreu um erro ao fazer login, verifique as credenciais'
+        )
+      }
     }
-    console.log(data)
   }
 
   return (
@@ -81,29 +80,27 @@ export function SignIn() {
               <Title>Faça seu login</Title>
             </View>
             <Input
-              name="email"
-              control={control}
+              value={email}
+              onChangeText={setEmail}
               iconName="mail"
               placeholder="E-mail"
               autoCapitalize="none"
               autoCorrect={false}
               keyboardType="email-address"
               returnKeyType="next"
-              error={errors.email && errors.email.message}
             />
             <Input
-              name="password"
-              control={control}
+              value={password}
+              onChangeText={setPassowrd}
               iconName="lock"
               placeholder="Senha"
               secureTextEntry
               returnKeyType="send"
-              error={errors.password && errors.password.message}
             />
 
             <Button
               title="Entrar"
-              onPress={handleSubmit(handleSigIn)}
+              onPress={handleSigIn}
             />
 
             <TextButton

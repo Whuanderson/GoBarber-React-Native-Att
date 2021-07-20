@@ -2,6 +2,7 @@ import 'react-native-gesture-handler';
 
 import { ThemeProvider } from 'styled-components';
 import AppLoading from 'expo-app-loading';
+import { AppProvider } from './src/hooks/';
 
 import {
   useFonts,
@@ -32,7 +33,9 @@ export default function App() {
       <NavigationContainer>
         <StatusBar barStyle="light-content" translucent backgroundColor={theme.colors.background_primary} />
         <View style={{ flex: 1, backgroundColor: theme.colors.background_primary }} >
-          <AuthRoutes />
+          <AppProvider>
+            <AuthRoutes />
+          </AppProvider>
         </View>
       </NavigationContainer>
     </ThemeProvider>

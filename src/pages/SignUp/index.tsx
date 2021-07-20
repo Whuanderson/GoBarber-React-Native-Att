@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useRef, useState } from 'react';
 import { Platform } from '@unimodules/react-native-adapter';
 
 import { api } from '../../services/api';
@@ -10,11 +10,9 @@ import { Button } from '../../components/Button';
 import { TextButton } from '../../components/TextButton';
 
 import * as Yup from 'yup';
-import { yupResolver } from '@hookform/resolvers/yup'
 
 import { theme } from '../../global/styles/theme';
-import { useNavigation } from '@react-navigation/native';
-import { useForm } from 'react-hook-form';
+import { useNavigation, useRoute } from '@react-navigation/native';
 
 import {
   TouchableWithoutFeedback,
@@ -31,55 +29,54 @@ import {
   Footer
 } from './styles';
 
-interface FormData {
-  name: string;
-  email: string;
-  password: string;
-}
-
-const schema = Yup.object().shape({
-  name: Yup
-    .string()
-    .required('Nome é obrigatório'),
-  email: Yup
-    .string()
-    .required('Email é obrigatório')
-    .email('Digite um e-mail válido'),
-  password: Yup
-    .string()
-    .required('Senha obrigatória'),
-});
-
 export function SignUp() {
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
+  const [password, setPassowrd] = useState('');
+
   const navigation = useNavigation();
 
-  const {
-    control,
-    handleSubmit,
-    formState: { errors }
-  } = useForm({
-    resolver: yupResolver(schema)
-  });
-
-  async function handleSigUp(form: FormData) {
-    const data = {
-      name: form.name,
-      email: form.email,
-      password: form.password
-    }
-    console.log(data)
-    await api.post('/users', {data})
-    .then(() => {
-      Alert.alert('Cadastro realizado com sucesso!',
-      'Você já pode fazer login na aplicação',
-    );
-      navigation.navigate('SignIn');
-    })
-    .catch(() => {
-      Alert.alert('Erro', 'Occorreu algum erro')
-    }) 
+  function handleBack() {
+    navigation.goBack();
   }
 
+  async function handleRegister() {
+    try {
+      const schema = Yup.object().shape({
+        password: Yup.string()
+          .required('Senha é obrigatória'),
+        email: Yup.string()
+          .email('E-mail inválido')
+          .required('E-mail é obrigatório'),
+        name: Yup.string()
+          .required('Nome é obrigatório'),
+      })
+
+      const data = { name, email, password }      
+      await schema.validate(data);
+
+      console.log(data)
+      
+    } catch (error) {
+      if (error instanceof Yup.ValidationError) {
+        return Alert.alert('Erro', error.message)
+      }      
+    }
+
+    await api.post("/users", { //não está funcionando o post na api
+      name,
+      email,
+      password,        
+    }).then(() => {
+      navigation.navigate('SignIn')
+      Alert.alert('Parabens!', 'Cadastro realizado com sucesso')
+    })
+    .catch((error) => {
+      console.log(error)
+      Alert.alert('Erro', 'Não foi possível concluir o cadastro.')
+    });
+  }
+  
   return (
     <>
       <KeyboardAvoidingView
@@ -92,36 +89,33 @@ export function SignUp() {
               <Title>Crie sua conta</Title>
             </View>
             <Input
-              name="name"
-              control={control}
               iconName="user"
               placeholder="Nome"
               autoCapitalize="words"
-              error={errors.name && errors.name.message}
+              value={name}
+              onChangeText={setName}
             />
             <Input
-              name="email"
-              control={control}
               iconName="mail"
               placeholder="E-mail"
               keyboardType="email-address"
               autoCorrect={false}
               autoCapitalize="none"
-              error={errors.email && errors.email.message}
+              value={email}
+              onChangeText={setEmail}
             />
             <Input
-              name="password"
-              control={control}
               iconName="lock"
               placeholder="Senha"
               secureTextEntry
               returnKeyType="send"
-              error={errors.password && errors.password.message}
+              value={password}
+              onChangeText={setPassowrd}
             />
 
             <Button
               title="Cadastrar"
-              onPress={handleSubmit(handleSigUp)}
+              onPress={handleRegister}
             />
 
 
@@ -136,7 +130,7 @@ export function SignUp() {
             justifyContent: 'center'
           }}
           iconName="arrow-left"
-          onPress={navigation.goBack}
+          onPress={handleBack}
           title="Voltar para o login"
           color={theme.colors.branco_texto}
         />

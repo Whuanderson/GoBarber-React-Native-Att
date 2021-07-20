@@ -1,28 +1,22 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState } from 'react';
 import { TextInputProps } from 'react-native';
 import { useTheme } from 'styled-components'
-import { Control, Controller } from 'react-hook-form';
 
 import { Feather } from '@expo/vector-icons';
 
 interface Props extends TextInputProps {
-  control: Control;
-  name: string;
   iconName: React.ComponentProps<typeof Feather>['name'];
-  error: string
+  value?: string;
 }
 
 import {
   Container,
-  TextInput,
-  Error,
+  TextInput
 } from './styles';
 
 export function Input({
   iconName,
-  control,
-  name,
-  error,
+  value,
   ...rest
 }: Props) {
 
@@ -31,38 +25,29 @@ export function Input({
 
   const theme = useTheme();
 
-  const handleInputFocus = useCallback(() => {
+  function handleInputFocus() {
     setIsFocused(true);
-  }, []);
+  }
 
-  const handleInputBlur = useCallback(() => {
+  function handleInputBlur() {
     setIsFocused(false);
-    setIsFilled(!!control.defaultValuesRef)
-  }, []);
+    setIsFilled(!!value)
+  }
 
   return (
-    <Container error={error} isFocused={isFocused} >
+    <Container isFocused={isFocused}>
       <Feather
         style={{ marginRight: 16 }}
-        name={iconName}
-        size={20}
+        name={iconName} size={20}
         color={(isFocused || isFilled) ? theme.colors.background_button : theme.colors.placeholder_color}
       />
-      <Controller
-        control={control}
-        render={({ field: { onChange, value } }) => (
-          <TextInput
-            onChangeText={onChange}
-            value={value}
-            keyboardAppearance="dark"
-            placeholderTextColor={theme.colors.placeholder_color}
-            onFocus={handleInputFocus}
-            onBlur={handleInputBlur}
-            {...rest}
-          />
-        )}
-        name={name} />
-       {error && <Error>{error}</Error>}
+      <TextInput        
+        onBlur={handleInputBlur}
+        onFocus={handleInputFocus}
+        keyboardAppearance="dark"
+        placeholderTextColor={theme.colors.placeholder_color}
+        {...rest}
+      />
     </Container>
   );
 }
