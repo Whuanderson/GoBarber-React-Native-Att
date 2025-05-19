@@ -1,7 +1,13 @@
 
-<h1 align="center">
-  GoBarber • Mobile
+<h1 align="center"> 
+  GoBarber • Mobile   
 </h1>
+
+<div align="center">
+<img src="https://raw.githubusercontent.com/Whuanderson/GoBarber-React-Native-Att/refs/heads/main/src/assets/logo%402x.png">
+</div>
+
+---
 
 <div align="center">
   <img alt="Top language" src="https://img.shields.io/github/languages/top/Whuanderson/GoBarber-React-Native-Att">
@@ -18,9 +24,9 @@
 ## 📸 Preview
 
 <p align="center">
-  <!-- Substitua pelos seus próprios screenshots / gif -->
-  <img src=".github/screens/login.png" width="250"> 
-  <img src=".github/screens/dashboard.png" width="250"> 
+  <img src="https://raw.githubusercontent.com/Whuanderson/GoBarber-React-Native-Att/refs/heads/main/.github/capa.png" width="850"> 
+  <img src="https://raw.githubusercontent.com/Whuanderson/GoBarber-React-Native-Att/refs/heads/main/.github/2.jpg" width="850"> 
+  <img src="https://raw.githubusercontent.com/Whuanderson/GoBarber-React-Native-Att/refs/heads/main/.github/1.jpg" width="850"> 
 </p>
 
 ## ✨ Funcionalidades
