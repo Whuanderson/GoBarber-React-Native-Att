@@ -18,11 +18,18 @@ App em **React Native** (TypeScript) que permite aos clientes agendar serviços
 
 ## 📸 Preview
 
-<p align="center">
-  <img src="https://raw.githubusercontent.com/Whuanderson/GoBarber-React-Native-Att/refs/heads/main/.github/capa.png"   alt="Capa do app" width="800"/><br>
-  <img src="https://raw.githubusercontent.com/Whuanderson/GoBarber-React-Native-Att/refs/heads/main/.github/2.jpg"       alt="Tela 2"      width="800"/><br>
-  <img src="https://raw.githubusercontent.com/Whuanderson/GoBarber-React-Native-Att/refs/heads/main/.github/1.jpg"       alt="Tela 1"      width="800"/>
-</p>
+<div align="center">
+  <img src="https://raw.githubusercontent.com/Whuanderson/GoBarber-React-Native-Att/refs/heads/main/.github/capa.png" alt="Capa do app" />
+</div>
+
+<div align="center">
+  <img src="https://raw.githubusercontent.com/Whuanderson/GoBarber-React-Native-Att/refs/heads/main/.github/2.jpg" alt="Tela 2" />
+</div>
+
+<div align="center">
+  <img src="https://raw.githubusercontent.com/Whuanderson/GoBarber-React-Native-Att/refs/heads/main/.github/1.jpg" alt="Tela 1" />
+</div>
+
 
 
 ## ✨ Funcionalidades
